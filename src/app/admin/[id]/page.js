@@ -1,8 +1,7 @@
-// src/app/admin/clients/[id]/page.js
-'use client'; // This page will also use client-side hooks to fetch data
+'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // For App Router, use next/navigation
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import React from 'react';
 
@@ -11,23 +10,20 @@ const ClientDetailsPage = ({ params }) => {
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const router = useRouter(); // Initialize router for navigation if needed
+  const router = useRouter();
 
   useEffect(() => {
-    if (!id) return; // Don't fetch if ID is not available yet
+    if (!id) return;
 
     const fetchClientDetails = async () => {
       try {
-        // Here you would call your backend API for a single client
-        // For demonstration, let's assume your API is at /api/clients/:id
         const response = await fetch(`https://onboardingform-ten.vercel.app/api/clients/${id}`);
-
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || `Failed to fetch client details for ID: ${id}`);
         }
         const data = await response.json();
-        setClient(data.client); // Assuming your API returns { client: {...} }
+        setClient(data.client);
       } catch (err) {
         console.error("Error fetching client details:", err);
         setError(err.message);
@@ -37,7 +33,7 @@ const ClientDetailsPage = ({ params }) => {
     };
 
     fetchClientDetails();
-  }, [id]); // Re-run effect if ID changes
+  }, [id]);
 
   if (loading) {
     return (
@@ -68,7 +64,7 @@ const ClientDetailsPage = ({ params }) => {
       <div className="min-h-screen bg-gray-100 text-gray-900 flex items-center justify-center p-4">
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4 text-gray-800">Client Not Found</h1>
-          <p className="text-lg text-gray-600">The client with ID "{id}" could not be found.</p>
+          <p className="text-lg text-gray-600">{`The client with ID "${id}" could not be found.`}</p>
           <Link href="/admin" className="mt-4 text-blue-600 hover:underline">
             Go back to client list
           </Link>
@@ -82,7 +78,7 @@ const ClientDetailsPage = ({ params }) => {
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-extrabold text-gray-800">
-            {client.clientName}'s Details
+            {`${client.clientName}'s Details`}
           </h1>
           <Link href="/admin" className="text-blue-600 hover:underline flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -175,8 +171,6 @@ const ClientDetailsPage = ({ params }) => {
           )}
         </div>
 
-        {/* You can add more sections for other details like income, expenses, assets, liabilities, etc. */}
-        {/* For example, if you want to show sources of income: */}
         {client.sourcesOfIncome && client.sourcesOfIncome.length > 0 && (
           <div className="mt-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Sources of Income</h2>
