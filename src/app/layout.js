@@ -14,6 +14,11 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Onboarding Form",
   description: "Client Onboarding Form for Financial Advisory",
+  icons: {
+    icon: '/favicon.ico', // This will typically be picked up automatically if in app/ or public/
+    shortcut: '/favicon-16x16.png', // Example for a specific size
+    apple: '/apple-touch-icon.png', // Example for Apple touch icon
+  },
 };
 
 export default function RootLayout({ children }) {
