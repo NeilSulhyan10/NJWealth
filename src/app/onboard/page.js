@@ -250,6 +250,7 @@ export default function Home() {
           accountHolder: "",
           termsAccepted: false,
         });
+        console.log(formData)
         setCurrentStep(1);
       } else {
         const errorData = await response.json();
