@@ -74,105 +74,105 @@ export default function Home() {
     setMessage("");
     setIsError(false);
 
-    // switch (step) {
-    //   case 1: // Personal Details
-    //     if (
-    //       !formData.clientName ||
-    //       !formData.dob ||
-    //       !formData.gender ||
-    //       !formData.maritalStatus ||
-    //       formData.number_of_dependents === ""
-    //     ) {
-    //       setMessage(
-    //         "Please fill in all required fields for Personal Details."
-    //       );
-    //       isValid = false;
-    //     }
-    //     break;
-    //   case 2: // Identification & Contact
-    //     if (!formData.pan || !formData.aadhar || !formData.email) {
-    //       // mobile was not in schema, keeping it out
-    //       setMessage(
-    //         "Please fill in all required fields for Identification & Contact."
-    //       );
-    //       isValid = false;
-    //     }
-    //     // Basic Regex for PAN and Aadhar (Client-side validation)
-    //     if (formData.pan && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan)) {
-    //       setMessage("Invalid PAN format. It should be like ABCDE1234F.");
-    //       isValid = false;
-    //     }
-    //     if (formData.aadhar && !/^[0-9]{12}$/.test(formData.aadhar)) {
-    //       setMessage("Invalid Aadhar format. It should be 12 digits.");
-    //       isValid = false;
-    //     }
-    //     if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
-    //       setMessage("Invalid email format.");
-    //       isValid = false;
-    //     }
-    //     break;
-    //   case 3: // Address Details
-    //     if (
-    //       !formData.address ||
-    //       !formData.city ||
-    //       !formData.state ||
-    //       !formData.pincode
-    //     ) {
-    //       setMessage("Please fill in all required fields for Address Details.");
-    //       isValid = false;
-    //     }
-    //     if (formData.pincode && !/^[0-9]{6}$/.test(formData.pincode)) {
-    //       setMessage("Invalid Pincode format. It should be 6 digits.");
-    //       isValid = false;
-    //     }
-    //     break;
-    //   case 4: // Financial & Investment Profile
-    //     if (
-    //       !formData.occupationType ||
-    //       !formData.riskProfile ||
-    //       !formData.mainGoal ||
-    //       !formData.investmentStyle ||
-    //       !formData.pastInvestmentExperiences
-    //     ) {
-    //       setMessage(
-    //         "Please fill in all required fields for Financial & Investment Profile."
-    //       );
-    //       isValid = false;
-    //     }
-    //     break;
-    //   case 5: // Insurance, Tax & Expectations
-    //     if (formData.hasLifeInsurance && !formData.lifeInsuranceDetails) {
-    //       setMessage("Please provide details for Life Insurance.");
-    //       isValid = false;
-    //     }
-    //     if (formData.hasHealthInsurance && !formData.healthInsuranceDetails) {
-    //       setMessage("Please provide details for Health Insurance.");
-    //       isValid = false;
-    //     }
-    //     if (!formData.incomeTaxSlab) {
-    //       setMessage("Please select your Income Tax Slab.");
-    //       isValid = false;
-    //     }
-    //     break;
-    //   case 6: // Bank Details & Terms (new step)
-    //     if (
-    //       !formData.bankName ||
-    //       !formData.accountNo ||
-    //       !formData.ifsc ||
-    //       !formData.accountType ||
-    //       !formData.accountHolder
-    //     ) {
-    //       setMessage("Please fill in all required fields for Bank Details.");
-    //       isValid = false;
-    //     }
-    //     if (!formData.termsAccepted) {
-    //       setMessage("You must agree to the terms and conditions to submit.");
-    //       isValid = false;
-    //     }
-    //     break;
-    //   default:
-    //     break;
-    // }
+    switch (step) {
+      case 1: // Personal Details
+        if (
+          !formData.clientName ||
+          !formData.dob ||
+          !formData.gender ||
+          !formData.maritalStatus ||
+          formData.number_of_dependents === ""
+        ) {
+          setMessage(
+            "Please fill in all required fields for Personal Details."
+          );
+          isValid = false;
+        }
+        break;
+      case 2: // Identification & Contact
+        if (!formData.pan || !formData.aadhar || !formData.email) {
+          // mobile was not in schema, keeping it out
+          setMessage(
+            "Please fill in all required fields for Identification & Contact."
+          );
+          isValid = false;
+        }
+        // Basic Regex for PAN and Aadhar (Client-side validation)
+        if (formData.pan && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan)) {
+          setMessage("Invalid PAN format. It should be like ABCDE1234F.");
+          isValid = false;
+        }
+        if (formData.aadhar && !/^[0-9]{12}$/.test(formData.aadhar)) {
+          setMessage("Invalid Aadhar format. It should be 12 digits.");
+          isValid = false;
+        }
+        if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
+          setMessage("Invalid email format.");
+          isValid = false;
+        }
+        break;
+      case 3: // Address Details
+        if (
+          !formData.address ||
+          !formData.city ||
+          !formData.state ||
+          !formData.pincode
+        ) {
+          setMessage("Please fill in all required fields for Address Details.");
+          isValid = false;
+        }
+        if (formData.pincode && !/^[0-9]{6}$/.test(formData.pincode)) {
+          setMessage("Invalid Pincode format. It should be 6 digits.");
+          isValid = false;
+        }
+        break;
+      case 4: // Financial & Investment Profile
+        if (
+          !formData.occupationType ||
+          !formData.riskProfile ||
+          !formData.mainGoal ||
+          !formData.investmentStyle ||
+          !formData.pastInvestmentExperiences
+        ) {
+          setMessage(
+            "Please fill in all required fields for Financial & Investment Profile."
+          );
+          isValid = false;
+        }
+        break;
+      case 5: // Insurance, Tax & Expectations
+        if (formData.hasLifeInsurance && !formData.lifeInsuranceDetails) {
+          setMessage("Please provide details for Life Insurance.");
+          isValid = false;
+        }
+        if (formData.hasHealthInsurance && !formData.healthInsuranceDetails) {
+          setMessage("Please provide details for Health Insurance.");
+          isValid = false;
+        }
+        if (!formData.incomeTaxSlab) {
+          setMessage("Please select your Income Tax Slab.");
+          isValid = false;
+        }
+        break;
+      case 6: // Bank Details & Terms (new step)
+        if (
+          !formData.bankName ||
+          !formData.accountNo ||
+          !formData.ifsc ||
+          !formData.accountType ||
+          !formData.accountHolder
+        ) {
+          setMessage("Please fill in all required fields for Bank Details.");
+          isValid = false;
+        }
+        if (!formData.termsAccepted) {
+          setMessage("You must agree to the terms and conditions to submit.");
+          isValid = false;
+        }
+        break;
+      default:
+        break;
+    }
 
     if (!isValid) {
       setIsError(true);
