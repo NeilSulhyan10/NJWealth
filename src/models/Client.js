@@ -229,17 +229,11 @@ const ClientSchema = new mongoose.Schema({
   },
   aadhar: {
     type: String,
-    required: true,
-    unique: true, // Assuming Aadhar is unique
-    trim: true,
-    match: /^[0-9]{12}$/ // Basic Aadhar format validation
+    required: true,// Basic Aadhar format validation
   },
   email: {
     type: String,
     required: true,
-    unique: true, // Email should be unique
-    trim: true,
-    lowercase: true,
     match: /^\S+@\S+\.\S+$/ // Basic email format validation
   },
   address: { type: String, trim: true },
