@@ -240,14 +240,8 @@ export default function Home() {
           hasHealthInsurance: false,
           healthInsuranceDetails: "",
           incomeTaxSlab: "",
-          taxSavingInvestments: "",
           pastInvestmentExperiences: "",
           expectationsFromAdvisor: "",
-          bankName: "",
-          accountNo: "",
-          ifsc: "",
-          accountType: "",
-          accountHolder: "",
           termsAccepted: false,
         });
         console.log(formData)
@@ -445,11 +439,6 @@ export default function Home() {
                   placeholder="email@example.com"
                 />
               </div>
-              {/* Mobile was not explicitly in the schema you provided, but often needed */}
-              {/* <div>
-                <label htmlFor="mobile" className="block text-sm font-semibold text-gray-700 mb-1">Mobile Number<span className="text-red-500">*</span></label>
-                <input type="tel" id="mobile" name="mobile" value={formData.mobile} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" placeholder="+919876543210" />
-              </div> */}
             </div>
           </>
         );
@@ -795,28 +784,7 @@ export default function Home() {
                   <option value="15% Slab">15% Slab</option>
                   <option value="20% Slab">20% Slab</option>
                   <option value="30% Slab">30% Slab</option>
-                  <option value="Old Regime">Old Regime</option>
-                  <option value="New Regime">New Regime</option>
                 </select>
-              </div>
-
-              {/* Tax Saving Investments */}
-              <div>
-                <label
-                  htmlFor="taxSavingInvestments"
-                  className="block text-sm font-semibold text-gray-700 mb-1"
-                >
-                  Tax Saving Investments (comma-separated)
-                </label>
-                <input
-                  type="text"
-                  id="taxSavingInvestments"
-                  name="taxSavingInvestments"
-                  value={formData.taxSavingInvestments}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-                  placeholder="e.g., PPF, ELSS, NPS"
-                />
               </div>
 
               {/* Expectations from Advisor */}
@@ -876,7 +844,7 @@ export default function Home() {
                   {stepNum === 1 && "Personal"}
                   {stepNum === 2 && "ID & Contact"}
                   {stepNum === 3 && "Address"}
-                  {stepNum === 4 && "Financial"}
+                  {stepNum === 4 && "Financial Profile"}
                   {stepNum === 5 && "Financial Goals"}
                   {stepNum === 6 && "Insurance & Tax"}
                 </span>

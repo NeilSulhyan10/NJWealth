@@ -225,9 +225,7 @@ const ClientSchema = new mongoose.Schema({
   pan: {
     type: String,
     required: true,
-    unique: true, // Assuming PAN is unique
     trim: true,
-    match: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/ // Basic PAN format validation
   },
   aadhar: {
     type: String,
