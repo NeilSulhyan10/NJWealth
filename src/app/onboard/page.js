@@ -206,7 +206,7 @@ export default function Home() {
     setIsError(false);
 
     try {
-      const response = await fetch("/api/clients", {
+      const response = await fetch("https://onboardingform-ten.vercel.app/api/clients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
