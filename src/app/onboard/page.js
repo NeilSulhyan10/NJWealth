@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"; // Import useEffect for initial hydration check
 import FinancialGoalsSection from '../components/case5';
+import Image from "next/image";
+
 
 // Main Onboarding Form component
 export default function Home() {
@@ -799,8 +801,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 font-inter">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-3xl border border-gray-200">
-        <h1 className="text-4xl font-extrabold text-gray-900 text-center mb-8">
+      <div className="relative bg-white p-8 pb-4 rounded-lg shadow-xl w-full max-w-3xl border border-gray-200">
+        <Image
+          src="/logo.png"
+          alt="Value 360 Logo"
+          width={69}
+          height={69}
+        />
+        <h1 className="text-4xl font-extrabold text-gray-900 text-center mb-8 mt-12 md:mt-0"> {/* Added margin-top for content clearance */}
           Client Onboarding Form
         </h1>
 
