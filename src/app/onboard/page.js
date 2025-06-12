@@ -138,7 +138,7 @@ export default function Home() {
           isValid = false;
         }
         break;
-      case 5: // Insurance, Tax & Expectations
+      case 6: // Insurance, Tax & Expectations
         if (formData.hasLifeInsurance && !formData.lifeInsuranceDetails) {
           setMessage("Please provide details for Life Insurance.");
           isValid = false;
