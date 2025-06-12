@@ -130,8 +130,6 @@ export default function Home() {
         if (
           !formData.occupationType ||
           !formData.riskProfile ||
-          !formData.mainGoal ||
-          !formData.investmentStyle ||
           !formData.pastInvestmentExperiences
         ) {
           setMessage(
@@ -151,22 +149,6 @@ export default function Home() {
         }
         if (!formData.incomeTaxSlab) {
           setMessage("Please select your Income Tax Slab.");
-          isValid = false;
-        }
-        break;
-      case 6: // Bank Details & Terms (new step)
-        if (
-          !formData.bankName ||
-          !formData.accountNo ||
-          !formData.ifsc ||
-          !formData.accountType ||
-          !formData.accountHolder
-        ) {
-          setMessage("Please fill in all required fields for Bank Details.");
-          isValid = false;
-        }
-        if (!formData.termsAccepted) {
-          setMessage("You must agree to the terms and conditions to submit.");
           isValid = false;
         }
         break;
