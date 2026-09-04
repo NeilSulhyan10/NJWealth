@@ -7,6 +7,75 @@ import Image from "next/image";
 
 // Main Onboarding Form component
 export default function Home() {
+  const defaultCurrentInvestments = {
+    selected: [],
+    availableForFutureInvestment: "",
+    majorRequirements: [],
+    mutualFunds: {
+      currentValue: "",
+      currentValueNotSure: false,
+      investmentMode: "",
+      monthlySip: "",
+      monthlySipNotSure: false,
+      statement: "",
+    },
+    sharesStocks: {
+      currentValue: "",
+      currentValueNotSure: false,
+      investmentStyle: "",
+      statement: "",
+    },
+    fdRd: {
+      currentValue: "",
+      currentValueNotSure: false,
+      needTiming: "",
+    },
+    goldSilver: {
+      type: "",
+      currentValue: "",
+      currentValueNotSure: false,
+    },
+    landPlot: {
+      currentValue: "",
+      currentValueNotSure: false,
+      purpose: "",
+      sellWithinFiveYears: "",
+    },
+    property: {
+      propertyType: "",
+      currentValue: "",
+      currentValueNotSure: false,
+      outstandingLoan: "",
+      outstandingLoanNotSure: false,
+      rentalIncome: "",
+      rentalIncomeNotSure: false,
+      sellingTimeline: "",
+    },
+    epfPpfNps: {
+      currentValue: "",
+      currentValueNotSure: false,
+    },
+    insuranceUlip: {
+      lifeCover: "",
+      lifeCoverNotSure: false,
+      annualPremium: "",
+      annualPremiumNotSure: false,
+      productType: "",
+      currentValue: "",
+      currentValueNotSure: false,
+    },
+    bondsDebentures: {
+      investmentType: "",
+      currentValue: "",
+      currentValueNotSure: false,
+    },
+    businessOther: {
+      investmentType: "",
+      currentValue: "",
+      currentValueNotSure: false,
+    },
+  };
+
   // State to manage form input values for all fields
   const [formData, setFormData] = useState({
     clientName: "",
@@ -24,6 +93,7 @@ export default function Home() {
     state: "",
     pincode: "",
     financialGoals: [], // Will be handled as a dynamic array later
+    currentInvestments: defaultCurrentInvestments,
     // sourcesOfIncome: [], // Will be handled as a dynamic array later
     // passiveIncome: [], // Will be handled as a dynamic array later
     // expenses: [], // Will be handled as a dynamic array later
@@ -69,6 +139,79 @@ export default function Home() {
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const updateCurrentInvestment = (category, field, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      currentInvestments: {
+        ...prevData.currentInvestments,
+        [category]: {
+          ...(prevData.currentInvestments?.[category] || {}),
+          [field]: value,
+        },
+      },
+    }));
+  };
+
+  const toggleInvestmentOption = (option) => {
+    setFormData((prevData) => {
+      const selected = new Set(prevData.currentInvestments?.selected || []);
+
+      if (option === "None") {
+        if (selected.has("None")) {
+          selected.delete("None");
+        } else {
+          selected.clear();
+          selected.add("None");
+        }
+      } else {
+        if (selected.has(option)) {
+          selected.delete(option);
+        } else {
+          selected.add(option);
+        }
+        selected.delete("None");
+      }
+
+      return {
+        ...prevData,
+        currentInvestments: {
+          ...prevData.currentInvestments,
+          selected: Array.from(selected),
+        },
+      };
+    });
+  };
+
+  const toggleRequirementOption = (option) => {
+    setFormData((prevData) => {
+      const requirements = new Set(prevData.currentInvestments?.majorRequirements || []);
+
+      if (option === "No major requirement") {
+        if (requirements.has("No major requirement")) {
+          requirements.delete("No major requirement");
+        } else {
+          requirements.clear();
+          requirements.add("No major requirement");
+        }
+      } else {
+        if (requirements.has(option)) {
+          requirements.delete(option);
+        } else {
+          requirements.add(option);
+        }
+        requirements.delete("No major requirement");
+      }
+
+      return {
+        ...prevData,
+        currentInvestments: {
+          ...prevData.currentInvestments,
+          majorRequirements: Array.from(requirements),
+        },
+      };
+    });
   };
 
   const validateStep = (step) => {
@@ -140,7 +283,7 @@ export default function Home() {
           isValid = false;
         }
         break;
-      case 6: // Insurance, Tax & Expectations
+      case 7: // Insurance, Tax & Expectations
         if (formData.hasLifeInsurance && !formData.lifeInsuranceDetails) {
           setMessage("Please provide details for Life Insurance.");
           isValid = false;
@@ -379,7 +522,16 @@ export default function Home() {
                   id="pan"
                   name="pan"
                   value={formData.pan}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    handleChange({
+                      target: {
+                        name: "pan",
+                        value: e.target.value.toUpperCase(),
+                        type: "text",
+                        checked: false,
+                      },
+                    })
+                  }
                   required
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
                   placeholder="ABCDE1234F"
@@ -593,7 +745,7 @@ export default function Home() {
                   htmlFor="pastInvestmentExperiences"
                   className="block text-sm font-semibold text-gray-700 mb-1"
                 >
-                  Past Investment Experiences
+                  Past Investment Experiences<span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="pastInvestmentExperiences"
@@ -611,13 +763,839 @@ export default function Home() {
         );
       case 5:
         return (
+          <>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+              Current Investments & Assets
+            </h2>
+
+            <div className="space-y-8">
+              <div>
+                <label className="block text-lg font-semibold text-gray-800 mb-3">
+                  What investments/assets do you currently have?
+                </label>
+                <p className="text-sm text-gray-500 mb-4">Approximate value is sufficient — no need to list every exact scheme.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    "Mutual Funds",
+                    "Shares / Stocks",
+                    "Bank FD / RD",
+                    "Gold / Silver",
+                    "Land / Plot",
+                    "Residential / Commercial Property",
+                    "EPF / PPF / NPS",
+                    "Insurance / ULIP",
+                    "Bonds / Debentures",
+                    "Business / Other Investments",
+                    "None",
+                  ].map((option) => {
+                    const isSelected = (formData.currentInvestments?.selected || []).includes(option);
+
+                    return (
+                      <label
+                        key={option}
+                        className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition ${
+                          isSelected
+                            ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                            : "border-gray-200 bg-white text-gray-700 hover:border-indigo-300"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleInvestmentOption(option)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="font-medium">{option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {(formData.currentInvestments?.selected || []).includes("Mutual Funds") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Mutual Funds</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate current value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.mutualFunds.currentValue}
+                          onChange={(e) => updateCurrentInvestment("mutualFunds", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.mutualFunds.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 500000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.mutualFunds.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("mutualFunds", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        How do you invest?
+                      </label>
+                      <div className="flex flex-wrap gap-3">
+                        {['SIP', 'Lump Sum', 'Both'].map((mode) => (
+                          <label key={mode} className="inline-flex items-center gap-2 text-gray-700">
+                            <input
+                              type="radio"
+                              name="mutualFundInvestmentMode"
+                              checked={formData.currentInvestments.mutualFunds.investmentMode === mode}
+                              onChange={() => updateCurrentInvestment("mutualFunds", "investmentMode", mode)}
+                              className="text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                            />
+                            <span>{mode}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {['SIP', 'Both'].includes(formData.currentInvestments.mutualFunds.investmentMode) && (
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">
+                          Approximate monthly SIP
+                        </label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <input
+                            type="number"
+                            value={formData.currentInvestments.mutualFunds.monthlySip}
+                            onChange={(e) => updateCurrentInvestment("mutualFunds", "monthlySip", e.target.value)}
+                            disabled={formData.currentInvestments.mutualFunds.monthlySipNotSure}
+                            className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                            placeholder="e.g. 10000"
+                            min="0"
+                          />
+                        </div>
+                        <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                          <input
+                            type="checkbox"
+                            checked={formData.currentInvestments.mutualFunds.monthlySipNotSure}
+                            onChange={(e) => updateCurrentInvestment("mutualFunds", "monthlySipNotSure", e.target.checked)}
+                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                          />
+                          <span className="ml-2">I’m not sure</span>
+                        </label>
+                      </div>
+                    )}
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Upload Mutual Fund / CAS Statement (optional)
+                      </label>
+                      <input
+                        type="file"
+                        accept=".pdf,.png,.jpg,.jpeg"
+                        onChange={(e) => updateCurrentInvestment("mutualFunds", "statement", e.target.files?.[0]?.name || "")}
+                        className="w-full px-3 py-2 rounded-xl border border-dashed border-gray-300 bg-white text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:text-indigo-700"
+                      />
+                      {formData.currentInvestments.mutualFunds.statement && (
+                        <p className="mt-2 text-xs text-gray-500">Selected file: {formData.currentInvestments.mutualFunds.statement}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Shares / Stocks") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Shares / Stocks</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate current value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.sharesStocks.currentValue}
+                          onChange={(e) => updateCurrentInvestment("sharesStocks", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.sharesStocks.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 400000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.sharesStocks.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("sharesStocks", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Investment style
+                      </label>
+                      <div className="flex flex-wrap gap-3">
+                        {['Long-term', 'Trading', 'Both'].map((style) => (
+                          <label key={style} className="inline-flex items-center gap-2 text-gray-700">
+                            <input
+                              type="radio"
+                              name="sharesInvestmentStyle"
+                              checked={formData.currentInvestments.sharesStocks.investmentStyle === style}
+                              onChange={() => updateCurrentInvestment("sharesStocks", "investmentStyle", style)}
+                              className="text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                            />
+                            <span>{style}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Holdings statement upload (optional)
+                      </label>
+                      <input
+                        type="file"
+                        accept=".pdf,.png,.jpg,.jpeg"
+                        onChange={(e) => updateCurrentInvestment("sharesStocks", "statement", e.target.files?.[0]?.name || "")}
+                        className="w-full px-3 py-2 rounded-xl border border-dashed border-gray-300 bg-white text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:text-indigo-700"
+                      />
+                      {formData.currentInvestments.sharesStocks.statement && (
+                        <p className="mt-2 text-xs text-gray-500">Selected file: {formData.currentInvestments.sharesStocks.statement}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Bank FD / RD") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Bank FD / RD</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate total value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.fdRd.currentValue}
+                          onChange={(e) => updateCurrentInvestment("fdRd", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.fdRd.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 800000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.fdRd.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("fdRd", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        When may the money be needed?
+                      </label>
+                      <select
+                        value={formData.currentInvestments.fdRd.needTiming}
+                        onChange={(e) => updateCurrentInvestment("fdRd", "needTiming", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                      >
+                        <option value="">Select timeline</option>
+                        <option value="<1 year">Less than 1 year</option>
+                        <option value="1–3 years">1–3 years</option>
+                        <option value="3–5 years">3–5 years</option>
+                        <option value="5+ years">5+ years</option>
+                        <option value="No specific requirement">No specific requirement</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Gold / Silver") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Gold / Silver</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Type
+                      </label>
+                      <select
+                        value={formData.currentInvestments.goldSilver.type}
+                        onChange={(e) => updateCurrentInvestment("goldSilver", "type", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                      >
+                        <option value="">Select type</option>
+                        <option value="Jewellery">Jewellery</option>
+                        <option value="Coins / Bars">Coins / Bars</option>
+                        <option value="Gold ETF">Gold ETF</option>
+                        <option value="SGB">SGB</option>
+                        <option value="Silver">Silver</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate current value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.goldSilver.currentValue}
+                          onChange={(e) => updateCurrentInvestment("goldSilver", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.goldSilver.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 250000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.goldSilver.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("goldSilver", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Land / Plot") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Land / Plot</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate current market value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.landPlot.currentValue}
+                          onChange={(e) => updateCurrentInvestment("landPlot", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.landPlot.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 1500000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.landPlot.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("landPlot", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Purpose
+                      </label>
+                      <select
+                        value={formData.currentInvestments.landPlot.purpose}
+                        onChange={(e) => updateCurrentInvestment("landPlot", "purpose", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                      >
+                        <option value="">Select purpose</option>
+                        <option value="Self-use">Self-use</option>
+                        <option value="Investment">Investment</option>
+                        <option value="Agricultural">Agricultural</option>
+                        <option value="Future construction">Future construction</option>
+                      </select>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Expect to sell within 5 years?
+                      </label>
+                      <div className="flex flex-wrap gap-3">
+                        {['Yes', 'No', 'Not sure'].map((option) => (
+                          <label key={option} className="inline-flex items-center gap-2 text-gray-700">
+                            <input
+                              type="radio"
+                              name="landSellWithinFiveYears"
+                              checked={formData.currentInvestments.landPlot.sellWithinFiveYears === option}
+                              onChange={() => updateCurrentInvestment("landPlot", "sellWithinFiveYears", option)}
+                              className="text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                            />
+                            <span>{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Residential / Commercial Property") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Property</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Property type
+                      </label>
+                      <select
+                        value={formData.currentInvestments.property.propertyType}
+                        onChange={(e) => updateCurrentInvestment("property", "propertyType", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                      >
+                        <option value="">Select property type</option>
+                        <option value="Residential">Residential</option>
+                        <option value="Commercial">Commercial</option>
+                        <option value="Industrial">Industrial</option>
+                        <option value="Plot">Plot</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate current market value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.property.currentValue}
+                          onChange={(e) => updateCurrentInvestment("property", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.property.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 2500000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.property.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("property", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Outstanding loan, if any
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.property.outstandingLoan}
+                          onChange={(e) => updateCurrentInvestment("property", "outstandingLoan", e.target.value)}
+                          disabled={formData.currentInvestments.property.outstandingLoanNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 900000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.property.outstandingLoanNotSure}
+                          onChange={(e) => updateCurrentInvestment("property", "outstandingLoanNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Rental income, if any
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.property.rentalIncome}
+                          onChange={(e) => updateCurrentInvestment("property", "rentalIncome", e.target.value)}
+                          disabled={formData.currentInvestments.property.rentalIncomeNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 25000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.property.rentalIncomeNotSure}
+                          onChange={(e) => updateCurrentInvestment("property", "rentalIncomeNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Expected selling timeline
+                      </label>
+                      <select
+                        value={formData.currentInvestments.property.sellingTimeline}
+                        onChange={(e) => updateCurrentInvestment("property", "sellingTimeline", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                      >
+                        <option value="">Select timeline</option>
+                        <option value="Within 1 year">Within 1 year</option>
+                        <option value="1–3 years">1–3 years</option>
+                        <option value="3–5 years">3–5 years</option>
+                        <option value="5+ years">5+ years</option>
+                        <option value="No plan to sell">No plan to sell</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("EPF / PPF / NPS") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">EPF / PPF / NPS</h3>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Approximate current value
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <input
+                        type="number"
+                        value={formData.currentInvestments.epfPpfNps.currentValue}
+                        onChange={(e) => updateCurrentInvestment("epfPpfNps", "currentValue", e.target.value)}
+                        disabled={formData.currentInvestments.epfPpfNps.currentValueNotSure}
+                        className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                        placeholder="e.g. 1200000"
+                        min="0"
+                      />
+                    </div>
+                    <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                      <input
+                        type="checkbox"
+                        checked={formData.currentInvestments.epfPpfNps.currentValueNotSure}
+                        onChange={(e) => updateCurrentInvestment("epfPpfNps", "currentValueNotSure", e.target.checked)}
+                        className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                      />
+                      <span className="ml-2">I’m not sure</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Insurance / ULIP") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Insurance / ULIP</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Product type
+                      </label>
+                      <select
+                        value={formData.currentInvestments.insuranceUlip.productType}
+                        onChange={(e) => updateCurrentInvestment("insuranceUlip", "productType", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                      >
+                        <option value="">Select product type</option>
+                        <option value="Pure insurance">Pure insurance</option>
+                        <option value="ULIP / Endowment / Money-back">ULIP / Endowment / Money-back</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate life cover
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.insuranceUlip.lifeCover}
+                          onChange={(e) => updateCurrentInvestment("insuranceUlip", "lifeCover", e.target.value)}
+                          disabled={formData.currentInvestments.insuranceUlip.lifeCoverNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 2000000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.insuranceUlip.lifeCoverNotSure}
+                          onChange={(e) => updateCurrentInvestment("insuranceUlip", "lifeCoverNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Annual premium
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.insuranceUlip.annualPremium}
+                          onChange={(e) => updateCurrentInvestment("insuranceUlip", "annualPremium", e.target.value)}
+                          disabled={formData.currentInvestments.insuranceUlip.annualPremiumNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 50000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.insuranceUlip.annualPremiumNotSure}
+                          onChange={(e) => updateCurrentInvestment("insuranceUlip", "annualPremiumNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+
+                    {['ULIP / Endowment / Money-back'].includes(formData.currentInvestments.insuranceUlip.productType) && (
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">
+                          Approximate current value
+                        </label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <input
+                            type="number"
+                            value={formData.currentInvestments.insuranceUlip.currentValue}
+                            onChange={(e) => updateCurrentInvestment("insuranceUlip", "currentValue", e.target.value)}
+                            disabled={formData.currentInvestments.insuranceUlip.currentValueNotSure}
+                            className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                            placeholder="e.g. 700000"
+                            min="0"
+                          />
+                        </div>
+                        <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                          <input
+                            type="checkbox"
+                            checked={formData.currentInvestments.insuranceUlip.currentValueNotSure}
+                            onChange={(e) => updateCurrentInvestment("insuranceUlip", "currentValueNotSure", e.target.checked)}
+                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                          />
+                          <span className="ml-2">I’m not sure</span>
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Bonds / Debentures") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Bonds / Debentures</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Investment type
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.currentInvestments.bondsDebentures.investmentType}
+                        onChange={(e) => updateCurrentInvestment("bondsDebentures", "investmentType", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                        placeholder="e.g. Bonds, debentures, private placement"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate current value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.bondsDebentures.currentValue}
+                          onChange={(e) => updateCurrentInvestment("bondsDebentures", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.bondsDebentures.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 300000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.bondsDebentures.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("bondsDebentures", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(formData.currentInvestments?.selected || []).includes("Business / Other Investments") && (
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Business / Other Investments</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Tell us a little about it
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.currentInvestments.businessOther.investmentType}
+                        onChange={(e) => updateCurrentInvestment("businessOther", "investmentType", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                        placeholder="e.g. Business equity, alternative investment"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Approximate current value
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                          type="number"
+                          value={formData.currentInvestments.businessOther.currentValue}
+                          onChange={(e) => updateCurrentInvestment("businessOther", "currentValue", e.target.value)}
+                          disabled={formData.currentInvestments.businessOther.currentValueNotSure}
+                          className="w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                          placeholder="e.g. 900000"
+                          min="0"
+                        />
+                      </div>
+                      <label className="inline-flex items-center mt-2 text-sm text-gray-600">
+                        <input
+                          type="checkbox"
+                          checked={formData.currentInvestments.businessOther.currentValueNotSure}
+                          onChange={(e) => updateCurrentInvestment("businessOther", "currentValueNotSure", e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="ml-2">I’m not sure</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                <label className="block text-lg font-semibold text-gray-800 mb-3">
+                  How much of your current investments could potentially be used for future investment?
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  {['None', 'Up to 10%', '10–25%', '25–50%', 'More than 50%'].map((option) => (
+                    <label
+                      key={option}
+                      className={`flex items-center justify-center rounded-xl border p-3 text-center cursor-pointer transition ${
+                        formData.currentInvestments.availableForFutureInvestment === option
+                          ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                          : "border-gray-200 bg-gray-50 text-gray-700"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="availableForFutureInvestment"
+                        checked={formData.currentInvestments.availableForFutureInvestment === option}
+                        onChange={() =>
+                          setFormData((prevData) => ({
+                            ...prevData,
+                            currentInvestments: {
+                              ...prevData.currentInvestments,
+                              availableForFutureInvestment: option,
+                            },
+                          }))
+                        }
+                        className="sr-only"
+                      />
+                      <span className="font-medium">{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                <label className="block text-lg font-semibold text-gray-800 mb-3">
+                  Do you have any major financial requirement in the next 3 years?
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                  {[
+                    'Home purchase',
+                    'Children\'s education',
+                    'Marriage',
+                    'Business',
+                    'Property purchase',
+                    'Vehicle',
+                    'Debt repayment',
+                    'Other',
+                    'No major requirement',
+                  ].map((option) => {
+                    const isSelected = (formData.currentInvestments.majorRequirements || []).includes(option);
+
+                    return (
+                      <label
+                        key={option}
+                        className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition ${
+                          isSelected
+                            ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                            : "border-gray-200 bg-gray-50 text-gray-700"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleRequirementOption(option)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <span className="font-medium">{option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      case 6:
+        return (
           <FinancialGoalsSection
           formData={formData}
           setFormData={setFormData}
           handleChange={handleChange} // If you need it for other fields within the section
         />
-        )  
-      case 6:
+        )
+      case 7:
         return (
           <>
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
@@ -797,7 +1775,7 @@ export default function Home() {
     }
   };
 
-  const totalSteps = 6; // Updated total steps
+  const totalSteps = 7;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 font-inter">
@@ -835,8 +1813,9 @@ export default function Home() {
                   {stepNum === 2 && "ID & Contact"}
                   {stepNum === 3 && "Address"}
                   {stepNum === 4 && "Financial Profile"}
-                  {stepNum === 5 && "Financial Goals"}
-                  {stepNum === 6 && "Insurance & Tax"}
+                  {stepNum === 5 && "Current Assets"}
+                  {stepNum === 6 && "Financial Goals"}
+                  {stepNum === 7 && "Insurance & Tax"}
                 </span>
               </div>
             );
@@ -896,41 +1875,27 @@ export default function Home() {
       </div>
       {/* Global styles for form inputs and selects */}
       <style jsx global>{`
-        .w-full
-          px-4
-          py-3
-          rounded-xl
-          border
-          border-gray-300
-          shadow-sm
-          placeholder-gray-400
-          text-gray-700
-          focus:outline-none
-          focus:ring-2
-          focus:ring-indigo-500
-          focus:border-indigo-500
-          transition
-          duration-200,
-        .w-full
-          px-4
-          py-3
-          rounded-xl
-          border
-          border-gray-300
-          shadow-sm
-          bg-white
-          text-gray-700
-          focus:outline-none
-          focus:ring-2
-          focus:ring-indigo-500
-          focus:border-indigo-500
-          transition
-          duration-200 {
-          @apply mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base transition duration-150 ease-in-out;
-        }
-        /* Inter font for better readability */
         body {
           font-family: "Inter", sans-serif;
+          background: #f3f4f6;
+        }
+
+        input,
+        select,
+        textarea {
+          transition: all 0.2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+          outline: none;
+          border-color: #4f46e5;
+          box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+        }
+
+        .form-card {
+          box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
         }
       `}</style>
     </div>
