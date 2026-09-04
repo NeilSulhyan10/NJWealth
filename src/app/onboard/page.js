@@ -1778,37 +1778,45 @@ export default function Home() {
   const totalSteps = 7;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 font-inter">
-      <div className="relative bg-white p-8 pb-4 rounded-lg shadow-xl w-full max-w-3xl border border-gray-200">
-        <Image
-          src="/logo.png"
-          alt="Value 360 Logo"
-          width={69}
-          height={69}
-        />
-        <h1 className="text-4xl font-extrabold text-gray-900 text-center mb-8 mt-12 md:mt-0"> {/* Added margin-top for content clearance */}
+    <div className="min-h-screen flex items-center justify-center bg-[#eef0f4] p-5 font-inter">
+      <div className="relative bg-[#f9fafb] p-6 md:p-8 pb-5 rounded-[26px] shadow-[0_24px_80px_rgba(15,23,42,0.08)] w-full max-w-5xl border border-[#e5e7eb]">
+        <div className="flex justify-center md:justify-start">
+          <div className="mb-2 flex items-center gap-3 rounded-xl bg-white/60 px-3 py-2 shadow-sm border border-gray-200">
+            <Image
+              src="/logo.png"
+              alt="Value 360 Logo"
+              width={58}
+              height={58}
+              className="object-contain"
+            />
+            <div className="leading-none text-left">
+              <div className="text-[10px] font-bold tracking-[0.28em] text-[#4b5563]">VALUE 360</div>
+            </div>
+          </div>
+        </div>
+
+        <h1 className="text-4xl md:text-5xl font-extrabold text-[#1f2937] text-center mb-8 mt-3 tracking-tight">
           Client Onboarding Form
         </h1>
 
         {/* Progress Indicator */}
-        <div className="flex justify-between mb-8">
+        <div className="flex justify-between mb-8 gap-2 md:gap-4">
           {[...Array(totalSteps)].map((_, index) => {
             const stepNum = index + 1;
+            const isActive = currentStep === stepNum;
+            const isDone = currentStep > stepNum;
+
             return (
-              <div key={stepNum} className="flex flex-col items-center">
+              <div key={stepNum} className="flex flex-1 flex-col items-center min-w-0">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white
-                  ${currentStep >= stepNum ? "bg-indigo-600" : "bg-gray-300"}
-                  ${
-                    currentStep === stepNum
-                      ? "ring-2 ring-indigo-500 ring-offset-2"
-                      : ""
-                  }
-                `}
+                  className={`w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold text-lg
+                  ${isDone || isActive ? "bg-[#4f46e5] text-white shadow-[0_10px_25px_rgba(79,70,229,0.35)]" : "bg-[#d1d5db] text-white"}
+                  ${isActive ? "ring-4 ring-[#c7d2fe]" : ""}
+                  `}
                 >
                   {stepNum}
                 </div>
-                <span className="text-xs mt-2 text-gray-600 text-center">
+                <span className={`mt-2 text-[10px] md:text-xs text-center leading-tight ${isDone || isActive ? "text-[#374151] font-semibold" : "text-[#6b7280]"}`}>
                   {stepNum === 1 && "Personal"}
                   {stepNum === 2 && "ID & Contact"}
                   {stepNum === 3 && "Address"}
@@ -1825,10 +1833,10 @@ export default function Home() {
         {/* Display messages (success/error) */}
         {message && (
           <div
-            className={`p-4 mb-6 rounded-lg text-sm font-medium ${
+            className={`p-4 mb-6 rounded-xl text-sm font-medium border ${
               isError
-                ? "bg-red-100 text-red-700"
-                : "bg-green-100 text-green-700"
+                ? "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]"
+                : "bg-[#ecfdf5] text-[#166534] border-[#bbf7d0]"
             }`}
             role="alert"
           >
@@ -1837,15 +1845,17 @@ export default function Home() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {renderStep()}
+          <div className="animate-[fadeSlide_0.35s_ease]">
+            {renderStep()}
+          </div>
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
+          <div className="flex justify-between mt-8 gap-4">
             {currentStep > 1 && (
               <button
                 type="button"
                 onClick={prevStep}
-                className="py-2 px-6 border border-gray-300 rounded-md shadow-sm text-lg font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out"
+                className="py-3 px-7 border border-[#d1d5db] rounded-xl shadow-sm text-lg font-semibold text-[#374151] bg-white hover:bg-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out"
               >
                 Previous
               </button>
@@ -1855,7 +1865,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="ml-auto py-2 px-6 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out"
+                className="ml-auto py-3 px-7 border border-transparent rounded-xl shadow-[0_12px_30px_rgba(79,70,229,0.28)] text-lg font-semibold text-white bg-[#4f46e5] hover:bg-[#4338ca] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out"
               >
                 Next
               </button>
@@ -1865,7 +1875,7 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={loading}
-                className="ml-auto py-2 px-6 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ml-auto py-3 px-7 border border-transparent rounded-xl shadow-[0_12px_30px_rgba(34,197,94,0.28)] text-lg font-semibold text-white bg-[#16a34a] hover:bg-[#15803d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Submitting..." : "Submit Form"}
               </button>
@@ -1877,13 +1887,20 @@ export default function Home() {
       <style jsx global>{`
         body {
           font-family: "Inter", sans-serif;
-          background: #f3f4f6;
+          background: linear-gradient(180deg, #eef2ff 0%, #f3f4f6 100%);
         }
 
         input,
         select,
         textarea {
           transition: all 0.2s ease;
+          background-color: rgba(255,255,255,0.9);
+          color: #1f2937;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+          color: #9ca3af;
         }
 
         input:focus,
@@ -1892,10 +1909,32 @@ export default function Home() {
           outline: none;
           border-color: #4f46e5;
           box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+          background-color: #ffffff;
         }
 
         .form-card {
           box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        .form-section {
+          background: rgba(255, 255, 255, 0.6);
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 8px 24px rgba(15, 23, 42, 0.03);
+        }
+
+        @keyframes fadeSlide {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-\[fadeSlide_0\.35s_ease\] {
+          animation: fadeSlide 0.35s ease;
         }
       `}</style>
     </div>
