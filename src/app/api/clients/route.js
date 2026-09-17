@@ -2,6 +2,8 @@ import { connectToDatabase } from '@/lib/db';
 import Client from '@/models/Client';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // POST /api/clients - Used to create a new client
 export async function POST(req) {
   // Ensure connection to the database

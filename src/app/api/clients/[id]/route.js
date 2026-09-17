@@ -2,6 +2,8 @@ import { connectToDatabase } from '@/lib/db';
 import Client from '@/models/Client';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/clients/[id] - Used to fetch a single client by ID
 export async function GET(req, { params }) {
   // Ensure connection to the database
